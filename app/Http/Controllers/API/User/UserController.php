@@ -53,7 +53,6 @@ class UserController extends Controller
             $user = User::find($id);
     
             if ($request->email != $user->email) {
-                dd("hello");
                 $request->validate([
                     'email' => 'unique:users,email',
                 ]);

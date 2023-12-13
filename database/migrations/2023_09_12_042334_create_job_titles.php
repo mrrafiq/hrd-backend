@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('job_titles', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
+            $table->string('name')->unique();
+            $table->text('description')->nullable();
             $table->text('parents')->nullable();
+            $table->text('children')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
             $table->boolean('is_active')->default(true);
             $table->softDeletes();

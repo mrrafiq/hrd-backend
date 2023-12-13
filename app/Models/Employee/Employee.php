@@ -5,6 +5,7 @@ namespace App\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Position\JobTitle;
 
 class Employee extends Model
 {
@@ -23,10 +24,6 @@ class Employee extends Model
         'grade'
     ];
 
-    protected $hidden = [
-        'id'
-    ];
-
     public static function GenerateEmployeeNumber()
     {
         $get_year = date('Y');
@@ -35,5 +32,13 @@ class Employee extends Model
         $count_employee++;
         $employee_number = $get_year . $get_month . sprintf("%03d", $count_employee);
         return $employee_number;
+    }
+
+    // get to know the parents and child employee
+    public static function getPositions($id)
+    {
+        // $employee = Employee::find($id);
+        
+        // return $positions;
     }
 }

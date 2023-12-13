@@ -18,17 +18,29 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
 
     Route::group(['middleware' => 'auth:sanctum'],function () {
         Route::post('logout', 'AuthController@logout')->name('logout');
+
         Route::group(['prefix' => 'employee'], function () {
             Route::get('/', 'Employee\EmployeeController@index')->name('employee.index');
-            Route::get('/show/{id}', 'Employee\EmployeeController@show')->name('employee.show');
+            Route::get('/show', 'Employee\EmployeeController@show')->name('employee.show');
             Route::post('/store', 'Employee\EmployeeController@store')->name('employee.store');
+            Route::put('/update', 'Employee\EmployeeController@update')->name('employee.update');
+            Route::delete('/delete', 'Employee\EmployeeController@delete')->name('employee.delete');
         });
 
         Route::group(['prefix' => 'user'], function () {
             Route::post('/store', 'User\UserController@store')->name('user.store');
             Route::get('/', 'User\UserController@index')->name('user.index');
-            Route::get('/{id}', 'User\UserController@show')->name('user.show');
+            Route::get('/show', 'User\UserController@show')->name('user.show');
             Route::put('/update', 'User\UserController@update')->name('user.update');
+        });
+
+        Route::group(['prefix' => 'positions'], function () {
+            Route::group(['prefix' => 'job-title'], function () {
+                Route::get('/', 'Position\JobTitleController@index')->name('job-title.index');
+                Route::post('/store', 'Position\JobTitleController@store')->name('job-title.store');
+                Route::put('/update', 'Position\JobTitleController@update')->name('job-title.update');
+                Route::get('/show', 'Position\JobTitleController@show')->name('job-title.show');
+            });
         });
     });
 });

@@ -7,15 +7,26 @@ use Illuminate\Http\Request;
 use F9Web\ApiResponseHelpers;
 use Illuminate\Http\JsonResponse;
 use App\Models\Employee\Employee;
+use Yajra\DataTables\Facades\DataTables;
+use App\Http\Controllers\API\Position\JobTitleController;
 
 class EmployeeController extends Controller
 {
     use ApiResponseHelpers;
 
-    public function index(): JsonResponse
+    public function index()
     {
-        $data = Employee::paginate(20);
-        return $this->respondWithSuccess($data);
+        $data = Employee::query();
+        return DataTables::eloquent($data)
+        ->filter(function ($query) {
+            if (request()->has('employee_number')) {
+                $query->where('employee_number', 'like', "%" . request('employee_number') . "%");
+            }
+            if (request()->has('job_title_id')) {
+                $query->where('job_title_id', 'like', "%" . request('job_title_id') . "%");
+            }
+        })
+        ->toJson();
     }
 
     public function store(Request $request)
@@ -38,6 +49,8 @@ class EmployeeController extends Controller
             $employee->date_of_birth = $request->date_of_birth;
             $employee->place_of_birth = $request->place_of_birth;
             $employee->address = $request->address;
+            $employee->job_title_id = $request?->job_title_id;
+            $employee->grade = $request?->grade;
             $employee->save();
         } catch (\Throwable $th) {
             return $this->respondError($th->getMessage());
@@ -46,7 +59,7 @@ class EmployeeController extends Controller
         return $this->respondWithSuccess();
     }
 
-    public function update(Request $request)
+    public function update(Request $request): JsonResponse
     {
         $request->validate([
             'phone_number' => 'required',
@@ -57,11 +70,13 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $employee = Employee::findOrfail($request->id);
+            $employee = Employee::find($request->id);
             $employee->phone_number = $request->phone_number;
             $employee->date_of_birth = $request->date_of_birth;
             $employee->place_of_birth = $request->place_of_birth;
             $employee->address = $request->address;
+            $employee->job_title_id = $request?->job_title_id;
+            $employee->grade = $request?->grade;
             $employee->save();
         } catch (\Throwable $th) {
             return $this->respondError($th->getMessage());
@@ -70,10 +85,10 @@ class EmployeeController extends Controller
         return $this->respondWithSuccess();
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            $employee = Employee::findOrfail($id);
+            $employee = Employee::findOrfail($request->id);
             $employee->delete();
         } catch (\Throwable $th) {
             return $this->respondError($th->getMessage());
@@ -84,9 +99,11 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
-        $data = Employee::find($id);
+        $data = Employee::find($request->id);
+        $positions = Employee::getPositions($request->id);
+        $data->positions = $positions;
         if (!$data) {
             return $this->respondNotFound("Employee not found");
         }

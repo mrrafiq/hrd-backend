@@ -43,6 +43,31 @@ class PositionSeeder extends Seeder
 
         //insert job title
         $job_titles = [
+            // jajaran direksi
+            [
+                "name" => "Director",
+                "description" => "Director",
+            ],
+            [
+                "name" => "President Director",
+                "description" => "President Director",
+            ],
+            [
+                "name" => "Vice President Director",
+                "description" => "Vice President Director",
+            ],
+            [
+                "name" => "Commissioner",
+                "description" => "Commissioner",
+            ],
+            [
+                "name" => "President Commissioner",
+                "description" => "President Commissioner",
+            ],
+            [
+                "name" => "Vice President Commissioner",
+                "description" => "Vice President Commissioner",
+            ],
             [
                 "name" => "IT Manager",
                 "description" => "IT Manager",
