@@ -21,6 +21,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->unsignedBigInteger('job_title_id')->nullable();
             $table->integer('grade')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

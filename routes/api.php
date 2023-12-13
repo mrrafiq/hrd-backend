@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
     Route::post('login', 'AuthController@login')->name('login');
 
-    Route::group(['middleware' => ['auth:sanctum']],function () {
+    Route::group(['middleware' => 'auth:sanctum'],function () {
+        Route::post('logout', 'AuthController@logout')->name('logout');
         Route::group(['prefix' => 'employee'], function () {
             Route::get('/', 'Employee\EmployeeController@index')->name('employee.index');
+            Route::get('/show/{id}', 'Employee\EmployeeController@show')->name('employee.show');
             Route::post('/store', 'Employee\EmployeeController@store')->name('employee.store');
         });
 
@@ -27,6 +28,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::post('/store', 'User\UserController@store')->name('user.store');
             Route::get('/', 'User\UserController@index')->name('user.index');
             Route::get('/{id}', 'User\UserController@show')->name('user.show');
+            Route::put('/update', 'User\UserController@update')->name('user.update');
         });
     });
 });

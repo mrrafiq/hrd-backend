@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
         try {
             $this->call(RolePermissionSeeder::class);
             $this->call(UserSeeder::class);
+            $this->call(PositionSeeder::class);
+            $this->call(EmployeeSeeder::class);
         } catch (\Throwable $th) {
             DB::rollback();
             throw $th;

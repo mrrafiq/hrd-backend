@@ -40,4 +40,40 @@ class UserController extends Controller
         $user = User::find($id);
         return $this->respondWithSuccess($user);
     }
+
+    public function update(Request $request): JsonResponse
+    {
+        $id = $request->id;
+        try {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'email|required',
+            ]);
+    
+            $user = User::find($id);
+    
+            if ($request->email != $user->email) {
+                dd("hello");
+                $request->validate([
+                    'email' => 'unique:users,email',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            $this->respondError($th->getMessage());
+        }
+        
+        try {
+            $user = User::find($id);
+            $user->name = $request->name;
+            $user->email = strtolower($request->email);
+            if ($request->password) {
+                $user->password = bcrypt($request->password);
+            }
+            $user->save();
+        } catch (\Throwable $th) {
+            $this->respondError($th->getMessage());
+        }
+        
+        return $this->respondWithSuccess($user);
+    }
 }

@@ -32,4 +32,12 @@ class AuthController extends Controller
         
         return $this->respondForbidden("Invalid credentials");
     }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+        return $this->respondWithSuccess([
+            "message" => "Logout successfully"
+        ]);
+    }
 }

@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
+            'login_as' => 'system_administrator'
         ]);
 
         $admin->assignRole('administrator');
@@ -30,8 +31,23 @@ class UserSeeder extends Seeder
             'name' => 'Rafiq',
             'email' => 'rafiq@gmail.com',
             'password' => bcrypt('password'),
+            'login_as' => 'employee'
         ]);
 
-        $employee_1->assignRole('employee');
+        $employee_2 = User::create([
+            'name' => 'John',
+            'email' => 'john@gmail.com',
+            'password' => bcrypt('password'),
+            'login_as' => 'employee'
+        ]);
+
+        $employee_3 = User::create([
+            'name' => 'Withney',
+            'email' => 'withney@gmail.com',
+            'password' => bcrypt('password'),
+            'login_as' => 'guest'
+        ]);
+
+        // $employee_1->assignRole('employee');
     }
 }

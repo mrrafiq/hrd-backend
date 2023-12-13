@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_titles', function (Blueprint $table) {
+        Schema::create('employee_contacts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
-            $table->text('parents')->nullable();
-            $table->unsignedBigInteger('department_id')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->unsignedBigInteger('employee_id');
+            $table->string('contact_name');
+            $table->string('type');
+            $table->string('value');
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('employee_id')->references('id')->on('employees');
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_titles');
+        Schema::dropIfExists('contacts');
     }
 };
