@@ -40,7 +40,26 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
                 Route::post('/store', 'Position\JobTitleController@store')->name('job-title.store');
                 Route::put('/update', 'Position\JobTitleController@update')->name('job-title.update');
                 Route::get('/show', 'Position\JobTitleController@show')->name('job-title.show');
+                Route::delete('/delete', 'Position\JobTitleController@delete')->name('job-title.delete');
             });
+        });
+
+        Route::group(['prefix' => 'roles'], function () {
+            Route::get('/', 'User\RoleController@index')->name('role.index');
+            Route::post('/store', 'User\RoleController@store')->name('role.store');
+            Route::post('/assign-permissions', 'User\RoleController@assign-permissions')->name('role.assign-permissions');
+            Route::put('/update', 'User\RoleController@update')->name('role.update');
+            Route::get('/show', 'User\RoleController@show')->name('role.show');
+            Route::get('/show-permissions', 'User\RoleController@showPermissions')->name('role.show-permissions');
+            Route::delete('/delete', 'User\RoleController@delete')->name('role.delete');
+        });
+
+        Route::group(['prefix' => 'permissions'], function () {
+            Route::get('/', 'User\PermissionController@index')->name('permission.index');
+            Route::post('/store', 'User\PermissionController@store')->name('permission.store');
+            Route::put('/update', 'User\PermissionController@update')->name('permission.update');
+            Route::get('/show', 'User\PermissionController@show')->name('permission.show');
+            Route::delete('/delete', 'User\PermissionController@delete')->name('permission.delete');
         });
     });
 });

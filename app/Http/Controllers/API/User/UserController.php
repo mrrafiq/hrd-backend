@@ -75,4 +75,21 @@ class UserController extends Controller
         
         return $this->respondWithSuccess($user);
     }
+
+    public function assign_role(Request $request): JsonResponse
+    {
+        $request->validate([
+            'user_id' => 'required',
+            'role_id' => 'required',
+        ]);
+
+        try {
+            $user = User::find($request->user_id);
+            $user->assignRole($request->role_id);
+        } catch (\Throwable $th) {
+            $this->respondError($th->getMessage());
+        }
+        
+        return $this->respondWithSuccess($user);
+    }
 }

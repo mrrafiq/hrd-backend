@@ -46,5 +46,7 @@ class RolePermissionSeeder extends Seeder
         } catch (\Throwable $th) {
             throw $th;
         }
+        $administrator = Role::findByName('administrator');
+        $administrator->givePermissionTo($permissions);
     }
 }

@@ -8,7 +8,6 @@ use F9Web\ApiResponseHelpers;
 use Illuminate\Http\JsonResponse;
 use App\Models\Employee\Employee;
 use Yajra\DataTables\Facades\DataTables;
-use App\Http\Controllers\API\Position\JobTitleController;
 
 class EmployeeController extends Controller
 {
@@ -101,9 +100,11 @@ class EmployeeController extends Controller
 
     public function show(Request $request)
     {
-        $data = Employee::find($request->id);
-        $positions = Employee::getPositions($request->id);
-        $data->positions = $positions;
+        $data = Employee::with(['job_title', 'user'])->find($request->id);
+        $job_title = Employee::getParentsChildren($request->id);
+        // dd($positions);
+        $data->job_title->parents = $job_title?->parents;
+        $data->job_title->children = $job_title?->children;
         if (!$data) {
             return $this->respondNotFound("Employee not found");
         }

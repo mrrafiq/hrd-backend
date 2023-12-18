@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Position\JobTitle;
+use App\Models\User;
 
 class Employee extends Model
 {
@@ -35,10 +36,38 @@ class Employee extends Model
     }
 
     // get to know the parents and child employee
-    public static function getPositions($id)
+    public static function getParentsChildren($id)
     {
-        // $employee = Employee::find($id);
+        $employee = Employee::find($id);
+        if (!$employee) {
+            return null;
+        }
+
+        $job_title = JobTitle::where('id', $employee->job_title_id)->first();
+        if (!$job_title) {
+            return null;
+        }
+        $get_parents = json_decode($job_title->parents ?? '[]');
+        $get_children = json_decode($job_title->children ?? '[]');
+
+        if ($get_children == null && $get_parents == null) {
+            return null;
+        }
+
+        $parents = Employee::whereIn('job_title_id', $get_parents)->get();
+        $children = Employee::whereIn('job_title_id', $get_children)->get();
+
+        return (object) ['parents' => $parents, 'children' => $children];
         
-        // return $positions;
+    }
+
+    public function job_title()
+    {
+        return $this->belongsTo(JobTitle::class, 'job_title_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

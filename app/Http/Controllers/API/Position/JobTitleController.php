@@ -25,7 +25,7 @@ class JobTitleController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'department_id' => 'required',
+            // 'department_id' => 'required',
             'parents' => 'array'
         ]);
 
@@ -49,7 +49,7 @@ class JobTitleController extends Controller
         $request->validate([
             'id' => 'required',
             'name' => 'required',
-            'department_id' => 'required',
+            // 'department_id' => 'required',
             // 'parents' => 'array'
         ]);
 
@@ -88,5 +88,19 @@ class JobTitleController extends Controller
         $data->children = $getPositions->children;
         
         return $this->respondWithSuccess($data);
+    }
+
+    public function destroy(Request $request): JsonResponse
+    {
+        try {
+            $job_title = JobTitle::find($request->id);
+            $job_title->delete();
+        } catch (\Throwable $th) {
+            return $this->respondError($th->getMessage());
+        }
+        
+        return $this->respondWithSuccess([
+            "message" => "Job title deleted successfully"
+        ]);
     }
 }
