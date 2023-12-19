@@ -6,12 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
-use F9Web\ApiResponseHelpers;
+use App\Helpers\ApiResponse;
 
 class PermissionController extends Controller
 {
-    use ApiResponseHelpers;
-
     public function index()
     {
         $data = Permission::query();
@@ -22,6 +20,7 @@ class PermissionController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'guard_name' => 'required'
         ]);
 
         try {
@@ -30,10 +29,10 @@ class PermissionController extends Controller
             $permission->guard_name = $request->guard_name;
             $permission->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+       return ApiResponse::success();
     }
 
     public function update(Request $request)
@@ -49,10 +48,10 @@ class PermissionController extends Controller
             $permission->guard_name = $request->guard_name;
             $permission->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+       return ApiResponse::success();
     }
 
     public function show(Request $request)
@@ -64,10 +63,10 @@ class PermissionController extends Controller
         try {
             $permission = Permission::find($request->id);
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess($permission);
+        return ApiResponse::onlyEntity($permission);
     }
 
     public function destroy(Request $request)
@@ -80,10 +79,10 @@ class PermissionController extends Controller
             $permission = Permission::find($request->id);
             $permission->delete();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+       return ApiResponse::success();
     }
 
     public function showRole(Request $request)
@@ -94,11 +93,11 @@ class PermissionController extends Controller
 
         try {
             $permission = Permission::find($request->id);
-            $roles = $permission->roles;
+            $roles = $permission->roles->toArray();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess($roles);
+        return ApiResponse::onlyEntity(['roles' => $roles]);
     }
 }

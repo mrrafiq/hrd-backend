@@ -4,15 +4,14 @@ namespace App\Http\Controllers\API\Employee;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\JsonResponse;
 use App\Models\Employee\Employee;
 use Yajra\DataTables\Facades\DataTables;
+use App\Helpers\ApiResponse;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
-    use ApiResponseHelpers;
-
     public function index()
     {
         $data = Employee::query();
@@ -38,6 +37,7 @@ class EmployeeController extends Controller
             'address' => 'required',
         ]);
 
+        DB::beginTransaction();
         $employee_number = Employee::GenerateEmployeeNumber();
 
         try {
@@ -52,10 +52,15 @@ class EmployeeController extends Controller
             $employee->grade = $request?->grade;
             $employee->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+        $give_permission = Employee::givePermission();
+        if (!$give_permission) {
+            return ApiResponse::failed('Failed to give permission');
+        }
+        DB::commit();
+        return ApiResponse::success();
     }
 
     public function update(Request $request): JsonResponse
@@ -68,6 +73,7 @@ class EmployeeController extends Controller
             'id' => 'required',
         ]);
 
+        DB::beginTransaction();
         try {
             $employee = Employee::find($request->id);
             $employee->phone_number = $request->phone_number;
@@ -78,10 +84,11 @@ class EmployeeController extends Controller
             $employee->grade = $request?->grade;
             $employee->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+        DB::commit();
+        return ApiResponse::success();
     }
 
     public function destroy(Request $request)
@@ -90,12 +97,10 @@ class EmployeeController extends Controller
             $employee = Employee::findOrfail($request->id);
             $employee->delete();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess([
-            "message" => "Employee deleted successfully"
-        ]);
+        return ApiResponse::success();
     }
 
     public function show(Request $request)
@@ -106,9 +111,9 @@ class EmployeeController extends Controller
         $data->job_title->parents = $job_title?->parents;
         $data->job_title->children = $job_title?->children;
         if (!$data) {
-            return $this->respondNotFound("Employee not found");
+            return ApiResponse::failed('Employee not found');
         }
-        return $this->respondWithSuccess($data);
+        return ApiResponse::onlyEntity($data);
     }
 
 }

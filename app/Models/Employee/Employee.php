@@ -70,4 +70,22 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public static function givePermission()
+    {
+        $permissions = [
+            'personal_data',
+            'request_laave',
+            'request_permission',
+        ];
+
+        try {
+            $basic_employee = Employee::find('basic_employee');
+            $basic_employee->givePermissionTo($permissions);
+        } catch (\Throwable $th) {
+            return false;
+        }
+        
+        return true;
+    }
 }

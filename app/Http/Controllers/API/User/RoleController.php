@@ -7,11 +7,10 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Facades\DataTables;
-use F9Web\ApiResponseHelpers;
+use App\Helpers\ApiResponse;
 
 class RoleController extends Controller
 {
-    use ApiResponseHelpers;
     public function index(): JsonResponse
     {
         $data = Role::query();
@@ -33,10 +32,10 @@ class RoleController extends Controller
         try {
             Role::create(['name' => $request->name]);
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+        return ApiResponse::success();
     }
 
     public function update(Request $request): JsonResponse
@@ -51,29 +50,29 @@ class RoleController extends Controller
             $role->name = $request->name;
             $role->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess();
+        return ApiResponse::success();
     }
 
     public function show(Request $request): JsonResponse
     {
         $role = Role::find($request->id);
         if (!$role) {
-            return $this->respondNotFound('Role not found');
+            return ApiResponse::failed('Role not found');
         }
-        return $this->respondWithSuccess($role);
+        return ApiResponse::onlyEntity($role);
     }
 
     public function destroy(Request $request): JsonResponse
     {
         $role = Role::find($request->id);
         if (!$role) {
-            return $this->respondNotFound('Role not found');
+            return ApiResponse::failed('Role not found');
         }
         $role->delete();
-        return $this->respondWithSuccess();
+        return ApiResponse::success();
     }
 
     public function assignPermission(Request $request): JsonResponse
@@ -87,22 +86,20 @@ class RoleController extends Controller
             $role = Role::find($request->role_id);
             $role->givePermissionTo($request->permission_id);
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess($role);
+        return ApiResponse::success();
     }
 
     public function showPermissions(Request $request): JsonResponse
     {
         $role = Role::find($request->id);
         if (!$role) {
-            return $this->respondNotFound('Role not found');
+            return ApiResponse::failed('Role not found');
         }
         $permissions = $role->permissions;
-        if ($permissions->isEmpty()) {
-            return $this->respondWithSuccess(['permissions' => []]);
-        }
-        return $this->respondWithSuccess($permissions);
+
+        return ApiResponse::onlyEntity(['permissions' => $permissions]);
     }
 }

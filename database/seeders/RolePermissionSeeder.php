@@ -16,6 +16,7 @@ class RolePermissionSeeder extends Seeder
     {
         $roles = [
             "administrator",
+            "basic_employee"
         ];
 
         try {

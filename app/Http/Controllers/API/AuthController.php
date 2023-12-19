@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use F9Web\ApiResponseHelpers;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\ApiResponse;
 
 class AuthController extends Controller
-{
-    use ApiResponseHelpers;
-    
+{    
     public function login(Request $request): JsonResponse
     {
         $request->validate([
@@ -24,20 +22,18 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
             $token = $user->createToken('token')->plainTextToken;
 
-            return $this->respondWithSuccess([
+            return ApiResponse::onlyEntity([
                 'token' => $token,
                 'user' => $user,
             ]);
         }
         
-        return $this->respondForbidden("Invalid credentials");
+        return ApiResponse::failed('Invalid credentials');
     }
 
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
-        return $this->respondWithSuccess([
-            "message" => "Logout successfully"
-        ]);
+        return ApiResponse::success('Logout successfully!');
     }
 }

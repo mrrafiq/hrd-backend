@@ -7,12 +7,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Position\JobTitle;
 use Yajra\DataTables\Facades\DataTables;
-use F9Web\ApiResponseHelpers;
+use App\Helpers\ApiResponse;
 
 class JobTitleController extends Controller
 {
-    use ApiResponseHelpers;
-
     public function index() :JsonResponse
     {
         $data = JobTitle::query();
@@ -36,7 +34,7 @@ class JobTitleController extends Controller
             $job_title->children = $request->children;
             $job_title->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
         return $this->respondWithSuccess();
@@ -60,7 +58,7 @@ class JobTitleController extends Controller
             $job_title->children = $request->children;
             $job_title->save();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
         return $this->respondWithSuccess();
@@ -94,7 +92,7 @@ class JobTitleController extends Controller
             $job_title = JobTitle::find($request->id);
             $job_title->delete();
         } catch (\Throwable $th) {
-            return $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
         return $this->respondWithSuccess([

@@ -6,12 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use F9Web\ApiResponseHelpers;
+use App\Helpers\ApiResponse;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
-    use ApiResponseHelpers;
-
     public function store(Request $request): JsonResponse
     {
         $request->validate([
@@ -26,19 +25,19 @@ class UserController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
 
-        return $this->respondCreated($user);
+        return ApiResponse::success();
     }
 
     public function index(): JsonResponse
     {
-        $data = User::paginate(20);
-        return $this->respondWithSuccess($data);
+        $data = User::query();
+        return DataTables::eloquent($data)->toJson();
     }
 
     public function show($id): JsonResponse
     {
         $user = User::find($id);
-        return $this->respondWithSuccess($user);
+        return ApiResponse::onlyEntity($user);
     }
 
     public function update(Request $request): JsonResponse
@@ -58,7 +57,7 @@ class UserController extends Controller
                 ]);
             }
         } catch (\Throwable $th) {
-            $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
         try {
@@ -70,10 +69,10 @@ class UserController extends Controller
             }
             $user->save();
         } catch (\Throwable $th) {
-            $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess($user);
+        return ApiResponse::success();
     }
 
     public function assign_role(Request $request): JsonResponse
@@ -87,9 +86,9 @@ class UserController extends Controller
             $user = User::find($request->user_id);
             $user->assignRole($request->role_id);
         } catch (\Throwable $th) {
-            $this->respondError($th->getMessage());
+            return ApiResponse::failed($th->getMessage());
         }
         
-        return $this->respondWithSuccess($user);
+        return ApiResponse::success();
     }
 }
