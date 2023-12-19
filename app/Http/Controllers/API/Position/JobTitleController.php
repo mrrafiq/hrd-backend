@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\API\Position;
 
 use App\Http\Controllers\Controller;
-use App\Models\Employee\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Position\JobTitle;
 use Yajra\DataTables\Facades\DataTables;
 use F9Web\ApiResponseHelpers;
-use Illuminate\Support\Facades\Redis;
 
 class JobTitleController extends Controller
 {

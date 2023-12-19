@@ -59,6 +59,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::post('/store', 'User\PermissionController@store')->name('permission.store');
             Route::put('/update', 'User\PermissionController@update')->name('permission.update');
             Route::get('/show', 'User\PermissionController@show')->name('permission.show');
+            Route::get('/show-roles', 'User\PermissionController@showRole')->name('permission.show-roles');
             Route::delete('/delete', 'User\PermissionController@delete')->name('permission.delete');
         });
     });
