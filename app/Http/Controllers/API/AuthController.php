@@ -24,7 +24,6 @@ class AuthController extends Controller
 
             return ApiResponse::onlyEntity([
                 'token' => $token,
-                'user' => $user,
             ]);
         }
         
@@ -35,5 +34,11 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return ApiResponse::success('Logout successfully!');
+    }
+
+    public function me(): JsonResponse
+    {
+        $data = Auth::user();
+        return ApiResponse::onlyEntity($data);
     }
 }
