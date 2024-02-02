@@ -23,6 +23,7 @@ class AuthController extends Controller
             $token = $user->createToken('token')->plainTextToken;
 
             return ApiResponse::onlyEntity([
+                'user' => $user,
                 'token' => $token,
             ]);
         }
@@ -39,6 +40,6 @@ class AuthController extends Controller
     public function me(): JsonResponse
     {
         $data = Auth::user();
-        return ApiResponse::onlyEntity($data);
+        return ApiResponse::onlyEntity(['user' => $data])       ;
     }
 }

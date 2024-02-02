@@ -31,7 +31,7 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         $data = User::query();
-        return DataTables::eloquent($data)->toJson();
+        return DataTables::eloquent($data->orderByDesc('created_at'))->toJson();
     }
 
     public function show($id): JsonResponse
