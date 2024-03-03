@@ -52,7 +52,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::put('/update', 'User\RoleController@update')->name('role.update');
             Route::get('/show', 'User\RoleController@show')->name('role.show');
             Route::get('/show-permissions', 'User\RoleController@showPermissions')->name('role.show-permissions');
-            Route::delete('/delete', 'User\RoleController@delete')->name('role.delete');
+            Route::delete('/delete', 'User\RoleController@destroy')->name('role.destroy');
         });
 
         Route::group(['prefix' => 'permissions', 'middleware' => ['permission:browse_permissions|read_permissions|edit_permissions|delete_permissions|add_permissions']], function () {
