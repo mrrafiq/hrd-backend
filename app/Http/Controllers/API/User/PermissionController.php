@@ -12,8 +12,8 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $data = Permission::query();
-        return DataTables::eloquent($data)->toJson();
+        $data = Permission::get();
+        return ApiResponse::onlyEntity($data);
     }
 
     public function store(Request $request)

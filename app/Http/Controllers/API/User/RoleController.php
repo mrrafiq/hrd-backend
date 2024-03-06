@@ -84,7 +84,7 @@ class RoleController extends Controller
 
         try {
             $role = Role::find($request->role_id);
-            $role->givePermissionTo($request->permission_id);
+            $role->syncPermissions($request->permission_id);
         } catch (\Throwable $th) {
             return ApiResponse::failed($th->getMessage());
         }
@@ -98,8 +98,17 @@ class RoleController extends Controller
         if (!$role) {
             return ApiResponse::failed('Role not found');
         }
-        $permissions = $role->permissions;
+        $get_data = $role->permissions;
+        $permissions = null;
 
-        return ApiResponse::onlyEntity(['permissions' => $permissions]);
+        foreach ($get_data as $key => $value) {
+            $permissions[$key]['id'] = $value->id;
+            $permissions[$key]['name'] = $value->name;
+            $permissions[$key]['guard_name'] = $value->guard_name;
+            $permissions[$key]['created_at'] = $value->created_at;
+            $permissions[$key]['updated_at'] = $value->updated_at;
+        }
+
+        return ApiResponse::onlyEntity($permissions);
     }
 }

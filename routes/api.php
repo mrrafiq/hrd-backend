@@ -48,7 +48,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
         Route::group(['prefix' => 'roles', 'middleware' => ['permission:browse_roles|read_roles|edit_roles|delete_roles|add_roles']], function () {
             Route::get('/', 'User\RoleController@index')->name('role.index');
             Route::post('/store', 'User\RoleController@store')->name('role.store');
-            Route::post('/assign-permissions', 'User\RoleController@assign-permissions')->name('role.assign-permissions');
+            Route::post('/assign-permissions', 'User\RoleController@assignPermission')->name('role.assign-permissions');
             Route::put('/update', 'User\RoleController@update')->name('role.update');
             Route::get('/show', 'User\RoleController@show')->name('role.show');
             Route::get('/show-permissions', 'User\RoleController@showPermissions')->name('role.show-permissions');
