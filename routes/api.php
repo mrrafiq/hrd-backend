@@ -61,7 +61,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::put('/update', 'User\PermissionController@update')->name('permission.update');
             Route::get('/show', 'User\PermissionController@show')->name('permission.show');
             Route::get('/show-roles', 'User\PermissionController@showRole')->name('permission.show-roles');
-            Route::delete('/delete', 'User\PermissionController@delete')->name('permission.delete');
+            Route::delete('/delete', 'User\PermissionController@destroy')->name('permission.delete');
         });
 
         Route::group(['prefix' => 'department', 'middleware' => ['permission:browse_department|read_department|edit_department|delete_department|add_department']], function () {

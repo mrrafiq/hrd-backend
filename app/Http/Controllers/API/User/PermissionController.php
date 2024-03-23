@@ -45,7 +45,7 @@ class PermissionController extends Controller
         try {
             $permission = Permission::find($request->id);
             $permission->name = $request->name;
-            $permission->guard_name = $request->guard_name;
+            $permission->guard_name = $request->guard_name ?? 'api';
             $permission->save();
         } catch (\Throwable $th) {
             return ApiResponse::failed($th->getMessage());
