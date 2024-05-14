@@ -23,20 +23,25 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = strtolower($request->email);
         $user->password = bcrypt($request->password);
+        $user->avatar = "/defaut-avatar.png";
         $user->save();
 
         return ApiResponse::success();
     }
 
-    public function index(): JsonResponse
+    public function index()
     {
-        $data = User::query();
-        return DataTables::eloquent($data->orderByDesc('created_at'))->toJson();
+        $users = User::get();
+        foreach ($users as $value) {
+            $value->roles = $value->getRoleNames();
+        }
+        return ApiResponse::onlyEntity($users);
     }
 
-    public function show($id): JsonResponse
+    public function show(Request $request)
     {
-        $user = User::find($id);
+        $user = User::find($request->id);
+        $user->roles = $user->getRoleNames();
         return ApiResponse::onlyEntity($user);
     }
 
@@ -84,7 +89,7 @@ class UserController extends Controller
 
         try {
             $user = User::find($request->user_id);
-            $user->assignRole($request->role_id);
+            $user->syncRoles($request->role_id);
         } catch (\Throwable $th) {
             return ApiResponse::failed($th->getMessage());
         }

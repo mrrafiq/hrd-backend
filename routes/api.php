@@ -33,6 +33,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::get('/', 'User\UserController@index')->name('user.index');
             Route::get('/show', 'User\UserController@show')->name('user.show');
             Route::put('/update', 'User\UserController@update')->name('user.update');
+            Route::post('/assign_role', 'User\UserController@assign_role')->name('user.assign_role');
         });
 
         Route::group(['prefix' => 'positions', 'middleware' => ['permission:browse_positions|read_positions|edit_positions|delete_positions|add_positions']], function () {

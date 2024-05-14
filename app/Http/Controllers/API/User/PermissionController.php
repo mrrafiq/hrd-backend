@@ -93,11 +93,11 @@ class PermissionController extends Controller
 
         try {
             $permission = Permission::find($request->id);
-            $roles = $permission->roles->toArray();
+            $roles = $permission?->roles->toArray();
         } catch (\Throwable $th) {
             return ApiResponse::failed($th->getMessage());
         }
         
-        return ApiResponse::onlyEntity(['roles' => $roles]);
+        return ApiResponse::onlyEntity($roles);
     }
 }
