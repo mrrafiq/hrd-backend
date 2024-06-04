@@ -19,6 +19,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
     Route::group(['middleware' => 'auth:sanctum'],function () {
         Route::post('logout', 'AuthController@logout')->name('logout');
         Route::get('/me', 'AuthController@me')->name('me');
+        Route::get('/show-permissions', 'AuthController@showUserPermissions')->name('user.show-permissions');
 
         Route::group(['prefix' => 'employee', 'middleware' => ['permission:browse_employee|read_employee|edit_employee|delete_employee|add_employee']], function () {
             Route::get('/', 'Employee\EmployeeController@index')->name('employee.index');

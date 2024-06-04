@@ -42,4 +42,15 @@ class AuthController extends Controller
         $data = Auth::user();
         return ApiResponse::onlyEntity(['user' => $data])       ;
     }
+
+    public function showUserPermissions(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        // get user roles
+        $permissions = $user->getPermissionsViaRoles();
+        $permissions = $permissions->map(function ($permission) {
+            return $permission->name;
+        });
+        return ApiResponse::onlyEntity($permissions);
+    }
 }
