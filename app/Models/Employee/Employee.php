@@ -25,6 +25,11 @@ class Employee extends Model
         'grade'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime:d-m-Y H:i:s',
+        'updated_at' => 'datetime:d-m-Y H:i:s',
+    ];
+
     public static function GenerateEmployeeNumber()
     {
         $get_year = date('Y');

@@ -14,17 +14,8 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $data = Employee::query();
-        return DataTables::eloquent($data)
-        ->filter(function ($query) {
-            if (request()->has('employee_number')) {
-                $query->where('employee_number', 'like', "%" . request('employee_number') . "%");
-            }
-            if (request()->has('job_title_id')) {
-                $query->where('job_title_id', 'like', "%" . request('job_title_id') . "%");
-            }
-        })
-        ->toJson();
+        $data = Employee::with(['user', 'job_title'])->get();
+        return ApiResponse::onlyEntity($data);
     }
 
     public function store(Request $request)

@@ -79,7 +79,7 @@ class RoleController extends Controller
     {
         $request->validate([
             'role_id' => 'required',
-            'permission_id' => 'array|required',
+            'permission_id' => 'array',
         ]);
 
         try {
