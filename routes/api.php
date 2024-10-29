@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
+    Route::get('/', 'TestController@test')->name('test');
     Route::post('login', 'AuthController@login')->name('login');
 
     Route::group(['middleware' => 'auth:sanctum'],function () {
@@ -27,6 +28,30 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::post('/store', 'Employee\EmployeeController@store')->name('employee.store');
             Route::put('/update', 'Employee\EmployeeController@update')->name('employee.update');
             Route::delete('/delete', 'Employee\EmployeeController@delete')->name('employee.delete');
+
+            Route::group(['prefix' => 'contacts'], function(){
+                Route::get('/', 'Employee\ContactsController@index')->name('employee.contacts.index');
+                Route::get('/show', 'Employee\ContactsController@show')->name('employee.contacts.show');
+                Route::post('/store', 'Employee\ContactsController@store')->name('employee.contacts.store');
+                Route::put('/update', 'Employee\ContactsController@update')->name('employee.contacts.update');
+                Route::delete('/delete', 'Employee\ContactsController@delete')->name('employee.contacts.delete');
+            });
+
+            Route::group(['prefix' => 'work_experiences'], function(){
+                Route::get('/', 'Employee\WorkExperienceController@index')->name('employee.work_experience.index');
+                Route::get('/show', 'Employee\WorkExperienceController@show')->name('employee.work_experience.show');
+                Route::post('/store', 'Employee\WorkExperienceController@store')->name('employee.work_experience.store');
+                Route::put('/update', 'Employee\WorkExperienceController@update')->name('employee.work_experience.update');
+                Route::delete('/delete', 'Employee\WorkExperienceController@delete')->name('employee.work_experience.delete');
+            });
+
+            Route::group(['prefix' => 'educations'], function(){
+                Route::get('/', 'Employee\EducationController@index')->name('employee.education.index');
+                Route::get('/show', 'Employee\EducationController@show')->name('employee.education.show');
+                Route::post('/store', 'Employee\EducationController@store')->name('employee.education.store');
+                Route::put('/update', 'Employee\EducationController@update')->name('employee.education.update');
+                Route::delete('/delete', 'Employee\EducationController@delete')->name('employee.education.delete');
+            });
         });
 
         Route::group(['prefix' => 'user', 'middleware' => ['permission:browse_user|read_user|edit_user|delete_user|add_user']], function () {
@@ -64,6 +89,7 @@ Route::group(['namespace' => 'App\Http\Controllers\API'], function () {
             Route::get('/show', 'User\PermissionController@show')->name('permission.show');
             Route::get('/show-roles', 'User\PermissionController@showRole')->name('permission.show-roles');
             Route::delete('/delete', 'User\PermissionController@destroy')->name('permission.delete');
+            Route::post('/assign-roles', 'User\PermissionController@assignRolesToPermision')->name('permission.assignRolesToPermission');
         });
 
         Route::group(['prefix' => 'department', 'middleware' => ['permission:browse_department|read_department|edit_department|delete_department|add_department']], function () {

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
+     * This migration is working on employees schema migrations
+     * All table that relate to employee data will be created here
      * Run the migrations.
      */
     public function up(): void
@@ -28,6 +30,45 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('job_title_id')->references('id')->on('job_titles');
         });
+
+        Schema::create('employee_contacts', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('contact_name');
+            $table->string('type');
+            $table->string('value');
+            $table->softDeletes();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+        });
+
+        Schema::create('employee_work_experience', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('job_title');
+            $table->string('company_name');
+            $table->date('join_date');
+            $table->date('end_date');
+            $table->softDeletes();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+        });
+
+        Schema::create('employee_educations', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('school_name');
+            $table->string('degree');
+            $table->string('major')->nullable();
+            $table->date('join_date');
+            $table->date('end_date');
+            $table->softDeletes();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+        });
     }
 
     /**
@@ -36,5 +77,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('employees');
+        Schema::dropIfExists('employee_contacts');
+        Schema::dropIfExists('employee_work_experience');
+        Schema::dropIfExists('employee_educations');
     }
 };

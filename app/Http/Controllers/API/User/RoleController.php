@@ -13,14 +13,8 @@ class RoleController extends Controller
 {
     public function index(): JsonResponse
     {
-        $data = Role::query();
-        return DataTables::eloquent($data)
-        ->filter(function ($query) {
-            if (request()->has('name')) {
-                $query->where('name', 'like', "%" . request('name') . "%");
-            }
-        })
-        ->toJson();
+        $data = Role::get();
+        return ApiResponse::onlyEntity($data);
     }
 
     public function store(Request $request): JsonResponse
